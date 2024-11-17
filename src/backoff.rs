@@ -4,7 +4,7 @@ use std::time::Duration;
 pub trait Backoff {
     /// Resets the internal state to the initial value.
     fn reset(&mut self) {}
-    /// next_backoff() time is elapsed before it is called again.
+    /// `next_backoff()` time is elapsed before it is called again.
     /// If it returns None, it means the operation timed out and no
     /// further retries are done.
     fn next_backoff(&mut self) -> Option<Duration>;
@@ -18,7 +18,7 @@ impl<B: Backoff + ?Sized> Backoff for Box<B> {
 
     fn reset(&mut self) {
         let this: &mut B = self;
-        this.reset()
+        this.reset();
     }
 }
 
@@ -52,6 +52,7 @@ pub struct Constant {
 impl Constant {
     /// Creates a new Constant backoff with `interval` contant
     /// backoff.
+    #[must_use]
     pub fn new(interval: Duration) -> Constant {
         Constant { interval }
     }

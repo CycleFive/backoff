@@ -1,6 +1,6 @@
-use instant::Instant;
 use std::marker::PhantomData;
 use std::time::Duration;
+use web_time::Instant;
 
 use crate::backoff::Backoff;
 use crate::clock::Clock;
@@ -53,11 +53,12 @@ where
 }
 
 impl<C: Clock> ExponentialBackoff<C> {
-    /// Returns the elapsed time since start_time.
+    /// Returns the elapsed time since `start_time`.
     pub fn get_elapsed_time(&self) -> Duration {
         self.clock.now().duration_since(self.start_time)
     }
 
+    /// TODO: Describe this function and its purpose.
     fn get_random_value_from_interval(
         randomization_factor: f64,
         random: f64,
@@ -89,10 +90,18 @@ impl<C: Clock> ExponentialBackoff<C> {
     }
 }
 
+/// Converts a `Duration` to nanoseconds as an `f64`.
+#[allow(clippy::cast_precision_loss)]
 fn duration_to_nanos(d: Duration) -> f64 {
+    // The 52 bit mantissa of an f64 can represent integers up to 2^53 exactly.
+    // That's over 100m years so we're good.
     d.as_secs() as f64 * 1_000_000_000.0 + f64::from(d.subsec_nanos())
 }
 
+/// Converts nanoseconds to a `Duration`. I believe looking at the code
+/// this is never going to be negative so we can safely cast to u64.
+#[allow(clippy::cast_sign_loss)]
+#[allow(clippy::cast_possible_truncation)]
 fn nanos_to_duration(nanos: f64) -> Duration {
     let secs = nanos / 1_000_000_000.0;
     let nanos = nanos as u64 % 1_000_000_000;
@@ -176,8 +185,9 @@ impl<C> ExponentialBackoffBuilder<C>
 where
     C: Clock + Default,
 {
+    #[must_use]
     pub fn new() -> Self {
-        Default::default()
+        ExponentialBackoffBuilder::default()
     }
 
     /// The initial retry interval.
@@ -215,6 +225,7 @@ where
         self
     }
 
+    #[must_use]
     pub fn build(&self) -> ExponentialBackoff<C> {
         ExponentialBackoff {
             current_interval: self.initial_interval,

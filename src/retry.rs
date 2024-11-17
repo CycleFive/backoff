@@ -20,6 +20,10 @@ use crate::error::Error;
 /// let backoff = ExponentialBackoff::default();
 /// let _ = retry(backoff, f).err().unwrap();
 /// ```
+///
+/// # Errors
+/// If the business logic returns an error, it is returned here.
+///
 pub fn retry<F, B, T, E>(backoff: B, op: F) -> Result<T, Error<E>>
 where
     F: FnMut() -> Result<T, Error<E>>,
@@ -53,6 +57,10 @@ where
 /// let backoff = Stop{};
 /// let _ = retry_notify(backoff, f, notify).err().unwrap();
 /// ```
+///
+/// # Errors
+///
+/// If the business logic returns an error, it is returned here.
 pub fn retry_notify<F, B, N, T, E>(backoff: B, op: F, notify: N) -> Result<T, Error<E>>
 where
     F: FnMut() -> Result<T, Error<E>>,
@@ -129,7 +137,7 @@ where
     F: FnMut(E, Duration),
 {
     fn notify(&mut self, err: E, duration: Duration) {
-        self(err, duration)
+        self(err, duration);
     }
 }
 
