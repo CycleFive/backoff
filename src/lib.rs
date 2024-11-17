@@ -1,5 +1,6 @@
 #![cfg_attr(docsrs, deny(broken_intra_doc_links))]
 #![cfg_attr(docsrs, feature(doc_cfg))]
+#![allow(clippy::module_name_repetitions)]
 
 //! `ExponentialBackoff` is a backoff implementation that increases the backoff
 //! period for each retry attempt using a randomization function that grows exponentially.
