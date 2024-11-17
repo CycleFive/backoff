@@ -2,7 +2,10 @@
 name = "backoff"
 version = "0.4.1-alpha.1"
 edition = "2018"
-authors = ["Tibor Benke <ihrwein@gmail.com>"]
+authors = [
+    "Tibor Benke <ihrwein@gmail.com>",
+    "Cycle Five <cycle.five@proton.me>",
+]
 license = "MIT/Apache-2.0"
 readme = "README.md"
 repository = "https://github.com/ihrwein/backoff"
